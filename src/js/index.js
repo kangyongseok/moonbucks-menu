@@ -2,6 +2,7 @@ import CategoryClass from './CategoryClass.js';
 import MoonbucksContentsClass from './MoonbucksContentsClass.js';
 import MenuListClass from './MenuListClass.js';
 import { domSelector, domSelectorAll } from '../utils/domSelect.js';
+
 class App {
   constructor() {
     this.$app = domSelector('#app');
@@ -112,18 +113,18 @@ new App();
 
 // const modifyMenu = (i) => {
 //   const modifyValue = prompt('메뉴명을 수정하세요', menuList[i]);
-//   if (modifyValue) {
-//     menuList[i] = modifyValue
-//     renderList()
-//   }
+  // if (modifyValue) {
+  //   menuList[i] = modifyValue
+  //   renderList()
+  // }
 // }
 
 // const deleteMenu = (i) => {
 //   const userAnswer = confirm('정말 삭제하시겠습니까?');
-//   if (userAnswer) {
-//     menuList.splice(i, 1);
-//     renderList()
-//   }
+  // if (userAnswer) {
+  //   menuList.splice(i, 1);
+  //   renderList()
+  // }
 // }
 
 // const menuBtnEvent = () => {
