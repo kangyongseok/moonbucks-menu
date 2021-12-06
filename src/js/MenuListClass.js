@@ -1,20 +1,33 @@
 import PubSub from '../utils/observer.js';
 import { domSelector, domSelectorAll } from '../utils/domSelect.js';
 import { getLocalStorage, setLocalStorage } from '../utils/localStorage.js'
+import callApi from '../utils/api.js';
 
 export default class MenuListClass {
-  constructor() {
-    this.menus = getLocalStorage('espresso')
+  constructor(props) {
+    this.menus = props?.result || []
+    this.getData = props?.getData
     this.category = 'espresso'
+    // this.getData()
     this.render()
     this.eventHandler()
     this.pubsub = PubSub;
     this.pubsub.sub('currentCategory', this.subHandler, this)
   }
 
+  // async getData() {
+  //   const apiData = {
+  //     method: "GET",
+  //     params: `/api/category/${this.category}/menu`
+  //   }
+  //   const result = await callApi(apiData)
+  //   this.menus = result
+  //   this.render()
+  // }
+
   subHandler(category) {
     this.category = category
-    this.menus = getLocalStorage(category) || []
+    // this.getData()
     this.render()
     this.eventHandler()
   }
@@ -92,6 +105,6 @@ export default class MenuListClass {
         </li>
     `
     }
-    ul.innerHTML = this.menus.map(menu => $menuListItem(menu)).join('')
+    ul.innerHTML = this.menus.map(obj => $menuListItem(obj.name)).join('')
   }
 }

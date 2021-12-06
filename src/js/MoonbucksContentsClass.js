@@ -1,18 +1,32 @@
 import PubSub from '../utils/observer.js';
 import { domSelector } from '../utils/domSelect.js';
+import callApi from '../utils/api.js';
 import categorys from '../constants/categorys.js';
 import MenuListClass from './MenuListClass.js';
 import { setLocalStorage, getLocalStorage } from '../utils/localStorage.js';
 
 export default class MoonbucksContentsClass {
-  constructor({ target }) {
+  constructor({ target, result }) {
     this.$target = target;
+    this.result = result;
     this.currentCategory = 'espresso'
     this.menus = getLocalStorage('espresso')
     this.pubsub = PubSub;
     this.pubsub.sub('currentCategory', this.subHandler, this)
     this.render()
     this.eventHandler()
+  }
+
+  async setData(menuName) {
+    const apiData = {
+      method: "POST",
+      params: `/api/category/${this.currentCategory}/menu`,
+      data: { name: menuName }
+    }
+    const result = await callApi(apiData);
+    if (result) {
+      alert('등록되었습니다.')
+    }
   }
 
   subHandler(category) {
@@ -27,6 +41,7 @@ export default class MoonbucksContentsClass {
     const $menuInput = domSelector('#espresso-menu-name');
     const menuName = $menuInput.value
     this.menus.push(menuName)
+    this.setData(menuName);
     setLocalStorage(this.currentCategory, this.menus)
     this.pubsub.pub('currentCategory', this.currentCategory)
     if (menuName) {
@@ -43,7 +58,7 @@ export default class MoonbucksContentsClass {
   render() {
     const selectCategory = categorys.find(obj => obj.category === this.currentCategory);
     const pureName = selectCategory.name.split(' ')[1]
-    const menuCount = getLocalStorage(this.currentCategory)?.length || 0;
+    const menuCount = this.result?.length || 0;
     this.$target.innerHTML = `
       <div class="heading d-flex justify-between">
         <h2 class="mt-1">${selectCategory.name} 메뉴 관리</h2>
@@ -63,7 +78,7 @@ export default class MoonbucksContentsClass {
                   autocomplete="off"
           />
           <button
-                  type="button"
+                  type="submit"
                   name="submit"
                   id="espresso-menu-submit-button"
                   class="input-submit bg-green-600 ml-2"
